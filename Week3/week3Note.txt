@@ -1,0 +1,107 @@
+Ch1:
+    介紹神經網路的由來，還有為何他有不敗的地位
+Ch2:
+    a. 第一個神經網路
+        老師說的hello world
+    b. google tensors操作
+        tensor 運算
+            keras.layers.Dense(512, activation='relu'):
+                此可視為一函式
+                output = relu(dot(W, input) + b)
+                dot product with tensor W and input
+                and add it to tensor b
+                and compare to 0 like max(x,0)
+            
+            relu = (Rectified Linear Unit, ReLU)
+            f(x) = max(x,0)
+            Q: Why they use this function to check
+    c. 經由梯度下降，神經網路如何學習逆向成長
+
+    Questions:
+        in the ch2, it says that "tensor" is a multi-dimensional array datastruct
+    notion:
+
+hello world:
+    28x28 pixels
+    10 categories(0~9)
+    Using MNIST dataset(a classic ML community)
+    every time the DL model processes 128 data
+
+
+Summary:
+    1. A neural network has several layers.
+        Based on each mathematic model, a neural network has different kind of connection of layers.
+        Does every model have different kinds of layer? Or they just different from the connection methods?
+
+        A: both
+
+    2. Each layer can be seen as a function.
+        Simply, a layer can be described like: output = logic(dot(Kernel, input) + bias)
+            a. get the dot product of kernel and input
+            b. add the result of (a) and bias
+            c. using the logic function to get output of a layer
+        In these functions, kernel matrix and bias are variables, can be changed by backward improving step(I forget the word)
+        Are all the variables in a layer only changed by training data?
+
+        A:yes W(or kernel), and b(bias) cannot be change by user.
+
+        Can the "dot product" part be changed based on each model? Or they are fixed in neural network?
+
+        A:No the dot product method is used in every neural network.
+
+    3. Each function has tensor operations
+        tensor operations:
+        Can it be seen as matrix operations?
+
+        A: yes, multi dimensional matrix
+
+        Can a tensor be seen as a multi-dimensional matrix?
+
+        A:yes
+
+        Can dot product be seen as a matrix multiplication?
+    
+        A:yes
+
+    4. Summary of Data Science Seminar
+        Deep learning each layer has a lot of nodes.
+        In the hello world example, I cannot see the trace of nodes.
+        Where can I find them?
+
+        A: 512 and 10
+
+    5. Summary of the hello world example
+        In this example, does it mean that:
+        a. this network has 2 layer.
+            first layer has 512 nodes and second layer has 10 nodes?
+
+            A: yes
+
+        b. In a neural network, the connections between layers are fully connected.
+            It means that in this example:
+            input fully connects to 512 nodes in layer 1.
+            512 nodes in layer 1 fully connect to 10 nodes in layer 2.
+            the outputs of these 10 nodes are the result.
+        c. Batch operating
+            Usually a neural network uses a fixed size of data to train.
+            Like:
+                0~127 => intput => output and backward improving
+                128~255 => intput => output and backward improving
+                ...
+        d. The overfitting
+            We want to get a smooth result curve.
+            if the output are 100% correct, its means that there is no any gray space.
+        e. the things we can change:
+            the number of layers in a network
+            the number of nodes in a layer
+            the regression function in a layer(all the nodes are the same function)
+            What is the main different between these function like ReLU and softmax?
+                I found the same point of these functions is they try to emphsis the highest value.
+
+                A: Only on the performance of a model
+
+
+After meeting
+Ch3.3 -3.5 and 4
+keras single input and output of unlabel data
+classfication model

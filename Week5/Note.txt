@@ -1,0 +1,116 @@
+4.1 Four types of ML{
+    1. supervised learning
+        common case. 
+        examples we did are this class.
+        like:
+            predict a title of a picture.
+            predict a sentence's decomposition into a syntax
+            detect a object in a picture.
+    2. unsupervised 
+        for the purposes of data visualization, data compression, or data denoising, or to better understand the correlations present in the data at hand.
+    3. Self-supervised learning
+        only little labeled data and most of data is unlabeled.
+    4. Reinforcement learning
+}
+
+4.2 Evaluating machine-learning models{
+    description: In this section, we’ll focus on how to measure generalization: how to evaluate machine-learning models.
+
+    4.2.1 Training, validation, and test sets
+        Q: Why we cannot only have 2 sets(training, testing set)?
+        A: if we use testing set to validate the model, the testing set will overfit when the model is completed and needs to be tested.
+            this phenomenon is "information leaks."
+            While a set is used in back propagation there is a little information leaking to the model.
+            If we have multi-epoch, the leaking is increasing.
+            Because we care about the performance of this model to the new data, so we cannot use old data to test it.
+        
+        validation{
+            this set will not be used in training and only used in collect some value to revise this model.
+        }
+
+        simple hold-out validation(data):
+            divide data into validation set and training set.
+            model.train(training set)
+            validation score = model.evaluate(validation set)
+
+            model.train(whole data)
+
+            test score = model.evaluate(testing set)
+        
+        K-fold validation(K, data):
+            divide data into K parts.
+            for i = 1 to K{
+                model.train(all data parts except i part)
+                validation score = model.evaluate(i part)
+            }
+
+            model.train(all data)
+            test score = model.evaluate(testing set)
+
+        K-fold validation with shuffling(K, data):
+            shuffling divide data into K parts.
+            model.train(all data parts except first part)
+            validation score = model.evaluate(first part)
+
+            model.train(all data)
+            test score = model.evaluate(testing set)
+    
+    note while choosing a evaluating protocol:
+        Data representativeness
+            it is common that data is skewed.
+            so before spliting data, you need to shuffle it again
+        data with timestamp
+            shuffling data will create a temporal leak: your model will effectively be trained on data from the future. In such situations, you should always make sure all data in your test set is posterior to the data in the training set.
+            
+            Q: how a time related data be impletemented in neural network.
+            RNN
+
+        data with redundancy
+            if we have redundancy data, need to make sure there is no the same data in the training set and validation set.
+}
+
+4.3 Data preprocessing for neural networks{
+    Data preprocessing aims at making the raw data at hand more amenable to neural networks. This includes: 
+        vectorization
+        normalization
+        handling missing values
+        feature extraction
+
+    vectorization{
+        All inputs and targets in a neural network must be tensors of floating-point data.
+        Whatever data you need to process—sound, images, text—you must first turn into tensors, a step called data vectorization. 
+    }
+
+    normalization{
+        Before you fed this data into your network, you had to normalize each feature independently so that it had a standard deviation of 1 and a mean of 0.
+
+        If the data isn't normalized. It can trigger large gradient updates that will prevent the network from converging.
+
+        2 notes:
+            Take small values—Typically, most values should be in the 0–1 range
+            Be homogenous—That is, all features should take values in roughly the same range
+
+        2 additional actions can help
+        normalize each feature independently so that it had:
+            a standard deviation of 1
+                x /= x.std() 
+            a mean of 0.
+                x -= x.mean()
+    }
+
+    handling missing values{
+        usually, set the missing values to 0, with the condition that 0 isn't already a meaningful value.
+        
+        Note that if you’re expecting missing values in the test data, but the network was trained on data without any missing values, the network won’t have learned to ignore missing values! In this situation, you should artificially generate training samples with missing entries: copy some training samples several times, and drop some of the features that you expect are likely to be missing in the test data.
+
+        Q: why this function is working? if we add some fake samples with 0 means missing value, why they are seen as miss values from model's sight.
+    }
+
+    feature extraction(Feature engineering){
+        Good features still allow you to solve problems more elegantly while using fewer resources. For instance, it would be ridiculous to solve the problem of reading a clock face using a convolutional neural network.
+
+        Good features let you solve a problem with far less data. 
+
+        depend on models.
+    }
+}

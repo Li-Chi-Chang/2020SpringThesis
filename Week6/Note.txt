@@ -1,0 +1,14 @@
+//Todo list
+1. 2nd video of mit camp
+2. lab on google cloud of mit camp
+3. chap 4.4 - 4.5 & chap 5
+4. do some examples
+
+4.4 overfitting and underfitting{
+    The processing of fighting overfitting this way is called regularization. We can look to chap 3.4 and find examples.
+
+    The simplest way to prevent overfitting is to reduce the size of the model.
+        the number of learnable parameters in the model (which is determined by the number of layers and the number of units per layer)
+
+    The general workflow to find an appropriate model size is to start with relatively few layers and parameters, and increase the size of the layers or add new layers until you see diminishing returns with regard to validation loss.
+}

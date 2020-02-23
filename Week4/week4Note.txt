@@ -1,0 +1,25 @@
+Ch2.4
+output = relu(dot(W, input) + b)
+
+W = weight(or kernel)
+b = trainable parameters(or bias)
+
+example1:
+    binary classify
+    movie reviews
+        1. need to preprocess the data set to tensors, sothat this data can fit to neural network.
+        2. relu activation function can be used in a lot of situations.
+        3. in a binary classification network, the final layer needs to have 1 unit. and the activation function is sigmoid.
+            The output will be 0~1 prob
+        4. rmsprop is the best optimizer
+        5.make sure the overfitting problem. 
+            This problem is occure after the honey point.
+            For now, we just trail and error. Testing a lot of epochs and find the great point.
+        6. in this binary classification and with sigmoid activation, you should use binary_crossentropy as your loss function.
+
+example2:
+    multiple classification
+    news
+        1. your final classification layer needs N units if you need to classify N classes.
+        2.if you have a multiple features and one label, use softmax to get the correct classification.
+        
