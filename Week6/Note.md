@@ -94,4 +94,126 @@ This step will take the most time. Modifing your model.
         Need to notice that. Information leak will occur while multiple times iteration.
 
 If you find a satisfactory model, you can start to train it. If the result of testing set is not as good as the validation set, it means that it is overfitting. Once you meet this issue, you can consider **iterated K fold validation**.
-&nbsp;&nbsp;&nbsp;&nbsp;
+
+## MINST Example
+
+### The function is below
+
+```python
+def mnist2LayersTest(Units,Epochs,Layers):
+   from keras.utils import to_categorical
+   from keras.datasets import mnist
+   from keras import models
+   from keras import layers
+   import numpy as np
+
+   #(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+   f = np.load("/home/chen/.keras/datasets/mnist.npz")
+   train_images, train_labels = f['x_train'], f['y_train']
+   test_images, test_labels = f['x_test'], f['y_test']
+   f.close()
+
+   #making the neural network>>>
+   network = models.Sequential()
+   network.add(layers.Dense(Units, activation='relu', input_shape=(28 * 28,)))
+   for i in range(Layers):
+      network.add(layers.Dense(Units, activation='relu'))
+   network.add(layers.Dense(10, activation='softmax'))
+
+   network.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+   #making the neural network<<<
+
+   #resize the inputs>>>
+   train_images = train_images.reshape((60000, 28 * 28))
+   train_images = train_images.astype('float32') / 255
+   test_images = test_images.reshape((10000, 28 * 28))
+   test_images = test_images.astype('float32') / 255
+   #add labels
+   train_labels = to_categorical(train_labels)
+   test_labels = to_categorical(test_labels)
+   #resize the inputs<<<
+
+   #training>>>
+   network.fit(train_images, train_labels, epochs=Epochs, batch_size=128)
+   #training<<<
+
+   #testing>>>
+   test_loss, test_acc = network.evaluate(test_images, test_labels)
+   #testing<<<
+
+   return test_acc
+```
+
+### This is the experiment of the number of Epochs
+
+```python
+#epochs find the peak
+import matplotlib.pyplot as plt
+
+acclist=[]
+for i in range(11):
+    acclist.append(mnist2LayersTest(2048,i,0))
+
+plt.plot(acclist)
+plt.show()
+
+print(acclist)
+```
+
+#### This is the Epochs' result in the array
+
+      In the loops
+         0.053700000047683716
+         0.9686999917030334
+         0.9750999808311462
+         0.979200005531311
+         0.977400004863739
+         0.98089998960495
+         0.9815999865531921
+         0.9818999767303467
+         0.9810000061988831
+         0.9818999767303467
+         0.9807999730110168
+
+#### Epoch part Summary
+
+In this experiment we can see that, more epochs make more accurancy.
+
+### This is the experiment of the number of Units
+
+```python
+#Units find the peak
+import matplotlib.pyplot as plt
+
+acclist=[]
+for i in range(15):
+    acclist.append(mnist2LayersTest(2**i,3,0))
+
+plt.plot(acclist[1:])
+plt.show()
+
+print(acclist)
+```
+
+#### This is the Units' result in the array
+
+      In the loops
+         0.2240999937057495
+         0.5679000020027161
+         0.8130000233650208
+         0.90420001745224
+         0.9319000244140625
+         0.9488000273704529
+         0.9581000208854675
+         0.9664000272750854
+         0.9660000205039978
+         0.9764000177383423
+         0.9771999716758728
+         0.977400004863739
+         0.9815000295639038
+         0.980400025844574
+         0.9793000221252441
+
+#### Unit part Summary
+
+In this experiment we can see that,
