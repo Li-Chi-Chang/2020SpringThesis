@@ -3,7 +3,7 @@
 Name: Li-Chi Chang
 Professor: Dr. Chen
 Date: Feb/19-25
-Coverage: Chap 4.4
+Coverage: Chap 4.4-5.1
 
 ## ToDo list
 
