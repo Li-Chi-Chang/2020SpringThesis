@@ -400,9 +400,10 @@ test_loss, test_acc = model.evaluate(test_images, test_labels)
 2. The acc rate is higher than the original one.(the highest rate is 0.9815 with (4096,3,0) -> 2 layers, 3 epochs and the hidden layer has 4096 units)
 3. The error rate is decreased 68%.
 
-#### Why is the convnet so powerful
+#### The convolution operation - Why is the convnet so powerful
 
 1. The convnet learns data with a lot of small windows. Dense layer learn the data with the whole picture.(The convnet example uses a 3*3 window)
 2. **The patterns they learn are translation invariant.** Dense network needs to retrain while a pattern appears at other locations. This makes convnet more efficient than dense network.
-
-***Stop at pg.123***
+3. **They can learn spatial hierarchies of patterns.** Beacuse of feature 1 and 2, convnet can learn concept from previous layer. First layer can learn the edges. And the following layers will learn the patterns first layer created. And the following layer learn the more complexed patterns from layer2 and so on.**(我的理解是:卷積網路會尋找pattern，最初可能是某圖形的某邊，最後一層層疊起來，成為更加複雜的pattern)**
+![Fig 5.2](Fig5.2.png "Fig 5.2")
+4. Convolutions operate 3D tensor(*feature map*). These features are: height, width and depth(channel). Height and width are straightforward. The dimension of depth in RGB pictures is 3(3 color channels). For the grayscale fig like MNIST dataset, the channel dimension is 1(the level of gray).
