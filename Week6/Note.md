@@ -320,7 +320,7 @@ model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 
 3. The meaning of Conv2D(32, (3, 3), ...) is that Conv2D(channel,(height, width), ...). When we go deeper into network, we want to shrink the height and width dimensions.
 
-##### Questions about this part
+##### My Questions about this part
 
 1. What is the channel meaning?
 2. Why the model need to set the channel to 32 and 64?
@@ -407,3 +407,15 @@ test_loss, test_acc = model.evaluate(test_images, test_labels)
 3. **They can learn spatial hierarchies of patterns.** Beacuse of feature 1 and 2, convnet can learn concept from previous layer. First layer can learn the edges. And the following layers will learn the patterns first layer created. And the following layer learn the more complexed patterns from layer2 and so on.**(我的理解是:卷積網路會尋找pattern，最初可能是某圖形的某邊，最後一層層疊起來，成為更加複雜的pattern)**
 ![Fig 5.2](Fig5.2.png "Fig 5.2")
 4. Convolutions operate 3D tensor(*feature map*). These features are: height, width and depth(channel). Height and width are straightforward. The dimension of depth in RGB pictures is 3(3 color channels). For the grayscale fig like MNIST dataset, the channel dimension is 1(the level of gray).
+5. In the MNIST example, conv2d_3(None,3,3,64). The input of first layer is (28,28,1) and the output of this layer is (26,26,32).
+   * It means that there are 32 filters in this layer.
+   * Each filter has a 26*26 grid of values.
+   * Each filter is typically 3X3 or 5X5.
+
+##### My assumption
+
+1. Using a loop to deal with the input picture. Divide this picture into 3X3 (or 5X5) windows.
+2. Training model with these windows and the output is the dot product of data with depth of the number of filters.
+3. Do it several times, shrink the data set to 3X3 with depth 64.
+4. So the dimensions are 3X3X64. Flatten this dataset.
+5. Training model with this dataset.
