@@ -1,0 +1,55 @@
+import os, shutil
+
+DatasetDir = "/home/chen/LiChiChang/2020SpringThesis/Week7/dataset/original/train" #pls indicate your path
+SmallDataDir = "/home/chen/LiChiChang/2020SpringThesis/Week7/dataset/shrink" #pls indicate your path
+
+trainDir = os.path.join(SmallDataDir, 'train')
+trainCatDir = os.path.join(trainDir, 'cat')
+trainDogDir = os.path.join(trainDir, 'dog')
+
+validationDir = os.path.join(SmallDataDir, 'validation')
+validationCatDir = os.path.join(validationDir, 'cat')
+validationDogDir = os.path.join(validationDir, 'dog')
+
+testDir = os.path.join(SmallDataDir, 'test')
+testCatDir = os.path.join(testDir, 'cat')
+testDogDir = os.path.join(testDir, 'dog')
+
+if os.path.exists(SmallDataDir):
+    shutil.rmtree(SmallDataDir)
+
+os.mkdir(SmallDataDir)
+
+os.mkdir(trainDir)
+os.mkdir(trainCatDir)
+os.mkdir(trainDogDir)
+
+os.mkdir(validationDir)
+os.mkdir(validationCatDir)
+os.mkdir(validationDogDir)
+
+os.mkdir(testDir)
+os.mkdir(testCatDir)
+os.mkdir(testDogDir)
+
+def loadData(src, dst, format, start, end):
+    datalist = [format.format(i) for i in range(start,end)]
+    for data in datalist:
+        srcData = os.path.join(src, data)
+        dstData = os.path.join(dst, data)
+        shutil.copyfile(srcData, dstData)
+
+loadData(DatasetDir, trainCatDir, 'cat.{}.jpg', 0, 1000)
+loadData(DatasetDir, validationCatDir, 'cat.{}.jpg', 1000, 1500)
+loadData(DatasetDir, testCatDir, 'cat.{}.jpg', 1500, 2000)
+
+loadData(DatasetDir, trainDogDir, 'dog.{}.jpg', 0, 1000)
+loadData(DatasetDir, validationDogDir, 'dog.{}.jpg', 1000, 1500)
+loadData(DatasetDir, testDogDir, 'dog.{}.jpg', 1500, 2000)
+
+print('total training cat images:', len(os.listdir(trainCatDir)))
+print('total training dog images:', len(os.listdir(trainDogDir)))
+print('total validation cat images:', len(os.listdir(validationCatDir)))
+print('total validation dog images:', len(os.listdir(validationDogDir)))
+print('total test cat images:', len(os.listdir(testCatDir)))
+print('total test dog images:', len(os.listdir(testDogDir)))
