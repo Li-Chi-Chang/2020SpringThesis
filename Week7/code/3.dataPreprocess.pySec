@@ -1,0 +1,17 @@
+from keras.preprocessing.image import ImageDataGenerator
+
+trainDataGen = ImageDataGenerator(rescale=1./255)
+testDataGen = ImageDataGenerator(rescale=1./255)
+
+trainGenerator = trainDataGen.flow_from_directory(trainDir,target_size=(150,150), batch_size=20, class_mode='binary')
+validationGenerator = trainDataGen.flow_from_directory(validationDir,target_size=(150,150), batch_size=20, class_mode='binary')
+'''
+>>> len(trainGenerator)
+100
+each data in trainGenerator is (20,150,150,3)
+it means that each data has 20 records, each of them is (150,150,3) like our input
+>>> len(validationGenerator)
+50
+'''
+
+print('step 3 is complete')

@@ -1,6 +1,6 @@
 # Week7 Cat Dog example
 
-## Step1: Download and preprocess dataset
+## Step1: Download dataset
 
 1. remind that you need to have a kaggle account
 2. download dataset via link <https://www.kaggle.com/c/3362/download-all>
@@ -152,37 +152,267 @@ because of the same reason, the activation function is 'sigmoid'
 '''
 
 model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=1e-4), metrics=['acc'])
+
+print('step 2 is complete')
 ```
 
 The result(model.summary()) cannot be shown because the size is too large, but it supposes like:
 
 ```bash
 >>> model.summary()
-Layer           (type)          Output Shape            Param #
-================================================================
-conv2d_1        (Conv2D)        (None, 148, 148, 32)    896
-________________________________________________________________
-maxpooling2d_1  (MaxPooling2D)  (None, 74, 74, 32)      0
-________________________________________________________________
-conv2d_2        (Conv2D)        (None, 72, 72, 64)      18496
-________________________________________________________________
-maxpooling2d_2  (MaxPooling2D)  (None, 36, 36, 64)      0
-________________________________________________________________
-conv2d_3        (Conv2D)        (None, 34, 34, 128)     73856
-________________________________________________________________
-maxpooling2d_3  (MaxPooling2D)  (None, 17, 17, 128)     0
-________________________________________________________________
-conv2d_4        (Conv2D)        (None, 15, 15, 128)     147584
-________________________________________________________________
-maxpooling2d_4  (MaxPooling2D)  (None, 7, 7, 128)       0
-________________________________________________________________
-flatten_1       (Flatten)       (None, 6272)            0
-________________________________________________________________
-dense_1         (Dense)         (None, 512)             3211776
-________________________________________________________________
-dense_2         (Dense)         (None, 1)               513
-================================================================
+Model: "sequential_3"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv2d_9 (Conv2D)            (None, 148, 148, 32)      896
+_________________________________________________________________
+max_pooling2d_9 (MaxPooling2 (None, 74, 74, 32)        0
+_________________________________________________________________
+conv2d_10 (Conv2D)           (None, 72, 72, 64)        18496
+_________________________________________________________________
+max_pooling2d_10 (MaxPooling (None, 36, 36, 64)        0
+_________________________________________________________________
+conv2d_11 (Conv2D)           (None, 34, 34, 128)       73856
+_________________________________________________________________
+max_pooling2d_11 (MaxPooling (None, 17, 17, 128)       0
+_________________________________________________________________
+conv2d_12 (Conv2D)           (None, 15, 15, 128)       147584
+_________________________________________________________________
+max_pooling2d_12 (MaxPooling (None, 7, 7, 128)         0
+_________________________________________________________________
+flatten_3 (Flatten)          (None, 6272)              0
+_________________________________________________________________
+dense_5 (Dense)              (None, 512)               3211776
+_________________________________________________________________
+dense_6 (Dense)              (None, 1)                 513
+=================================================================
 Total params: 3,453,121
 Trainable params: 3,453,121
 Non-trainable params: 0
+_________________________________________________________________
 ```
+
+## Step3: Data preprocessing
+
+Using data **generator** (Chinese explaination: <https://openhome.cc/Gossip/Python/YieldGenerator.html>)
+
+```python
+from keras.preprocessing.image import ImageDataGenerator
+
+trainDataGen = ImageDataGenerator(rescale=1./255)
+testDataGen = ImageDataGenerator(rescale=1./255)
+
+trainGenerator = trainDataGen.flow_from_directory(trainDir,target_size=(150,150), batch_size=20, class_mode='binary')
+validationGenerator = trainDataGen.flow_from_directory(validationDir,target_size=(150,150), batch_size=20, class_mode='binary')
+'''
+>>> len(trainGenerator)
+100
+each data in trainGenerator is (20,150,150,3)
+it means that each data has 20 records, each of them is (150,150,3) like our input
+>>> len(validationGenerator)
+50
+'''
+
+print('step 3 is complete')
+```
+
+## Step4: Fit model and safe it as a file
+
+Because we use generator at previous step, using fit_generator instead of fit at this part.
+
+```python
+history = model.fit_generator(trainGenerator, steps_per_epoch=100, epochs=30, validation_data=validationGenerator, validation_steps=50)
+'''
+Because we use generator, so we need to indicate the steps, or it will fit for infinite.
+steps_per_epoch = 2000(amont of dataset)/20(each generator content)
+The same reason to validation data.
+validation_steps = 1000/20
+'''
+model.save('catDogClassifySmallDataset.h5')
+
+print("step 4 is complete")
+```
+
+## Step5: show the summary
+
+```python
+import matplotlib.pyplot as plt
+
+acc = history.history['acc']
+validationAcc = history.history['val_acc']
+
+loss = history.history['loss']
+validationLoss = history.history['val_loss']
+
+epochs = range(1, len(acc)+1)
+
+plt.plot(epochs, acc, 'bo', label='training acc')
+plt.plot(epochs, validationAcc, 'b', label='validation acc')
+plt.title('training and validation accuracy')
+plt.legend()
+plt.show()
+
+plt.plot(epochs, loss, 'bo', label='training loss')
+plt.plot(epochs, validationLoss, 'b', label='validation loss')
+plt.title('training and validation loss')
+plt.legend()
+plt.show()
+
+print("step 5 is complete")
+```
+
+The result is shown below:
+![summary.png](2020-03-03103046.png 'summary')
+
+* Why the loss function has value higher than 1?
+  * pls ref these links
+    * <https://blog.csdn.net/legalhighhigh/article/details/81409551>
+    * <https://zh.wikipedia.org/wiki/%E6%90%8D%E5%A4%B1%E5%87%BD%E6%95%B8>
+
+Because our dataset is quite small, we cannot have higher accurancy.
+
+## Step6: Do some update
+
+### data augmentation(數據擴充)
+
+We try to avoid overfitting especially we have small dataset. Data augmentation is a solution try to generate more train data from existing training data samples. These generated samples are from random tranformations that yield believable-looking image.
+
+The propose of this step is trying to avoid fitting the model using same data. It can be generalization better and expose data more.
+
+There is a example of data augmentation:
+
+```python
+'''
+Example of Data Augmentation
+'''
+
+from keras.preprocessing import image
+
+datagen = ImageDataGenerator(rotation_range=40,width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True, fill_mode='nearest')
+
+fnames = [os.path.join(trainCatDir, fname) for fname in os.listdir(trainCatDir)]
+img_path = fnames[5]#Randomly pick a picture from cats training dataset
+
+img = image.load_img(img_path, target_size=(150, 150))
+x = image.img_to_array(img)#make the input img size to fit the model and transfer img to array
+
+x = x.reshape((1,) + x.shape)#add on feature to fit batch format
+
+i = 0
+for batch in datagen.flow(x, batch_size=1):#do the data augmentation several times(here is 4) and show the pictures
+    plt.figure(i)
+    imgplot = plt.imshow(image.array_to_img(batch[0]))
+    i += 1
+    if i % 4 == 0:
+        break
+plt.show()
+```
+
+The result is shown below:
+![resultEx6.png](2020-03-03150529.png 'resultEx6')
+
+### The model also do some update
+
+* It is added a layer called "dropout"
+This layer is try to drop some update information.
+
+The model is shown below:
+
+```python
+model = models.Sequential()
+
+model.add(layers.Conv2D(32, (3,3), activation='relu', input_shape=(150,150,3)))
+model.add(layers.MaxPooling2D( (2,2) ))
+
+model.add(layers.Conv2D(64, (3,3), activation='relu'))
+model.add(layers.MaxPooling2D( (2,2) ))
+
+model.add(layers.Conv2D(128, (3,3), activation='relu'))
+model.add(layers.MaxPooling2D( (2,2) ))
+
+model.add(layers.Conv2D(128, (3,3), activation='relu'))
+model.add(layers.MaxPooling2D( (2,2) ))
+
+model.add(layers.Flatten())
+#Only add this layer comparing to the previous model
+model.add(layers.Dropout(0.5))
+
+model.add(layers.Dense(512, activation='relu'))
+model.add(layers.Dense(1,activation='sigmoid'))
+
+model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=1e-4), metrics=['acc'])
+```
+
+the model summary:
+
+```bash
+Model: "sequential_4"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv2d_13 (Conv2D)           (None, 148, 148, 32)      896
+_________________________________________________________________
+max_pooling2d_13 (MaxPooling (None, 74, 74, 32)        0
+_________________________________________________________________
+conv2d_14 (Conv2D)           (None, 72, 72, 64)        18496
+_________________________________________________________________
+max_pooling2d_14 (MaxPooling (None, 36, 36, 64)        0
+_________________________________________________________________
+conv2d_15 (Conv2D)           (None, 34, 34, 128)       73856
+_________________________________________________________________
+max_pooling2d_15 (MaxPooling (None, 17, 17, 128)       0
+_________________________________________________________________
+conv2d_16 (Conv2D)           (None, 15, 15, 128)       147584
+_________________________________________________________________
+max_pooling2d_16 (MaxPooling (None, 7, 7, 128)         0
+_________________________________________________________________
+flatten_4 (Flatten)          (None, 6272)              0
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 6272)              0
+_________________________________________________________________
+dense_7 (Dense)              (None, 512)               3211776
+_________________________________________________________________
+dense_8 (Dense)              (None, 1)                 513
+=================================================================
+Total params: 3,453,121
+Trainable params: 3,453,121
+Non-trainable params: 0
+_________________________________________________________________
+```
+
+### Data preprocessing(Data augmentation)
+
+```python
+trainDataGen = ImageDataGenerator(rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True,)
+
+testDataGen = ImageDataGenerator(rescale=1./255)
+
+trainGenerator = trainDataGen.flow_from_directory(trainDir, target_size=(150,150), batch_size=32, class_mode='binary')
+
+validationGenerator = testDataGen.flow_from_directory(validationDir, target_size=(150,150), batch_size=32, class_mode='binary')
+
+history = model.fit_generator(trainGenerator, steps_per_epoch=100, epochs = 100, validation_data=validationGenerator, validation_steps=50)
+
+model.save("catDogClassfiyDataset2.h5")
+```
+
+Based on the original dataset, we create similar data and feed into this model. Now we can see how to create it.
+
+```python
+trainDataGen = ImageDataGenerator(rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True,)
+```
+
+
+## Questions
+
+1. Does high validation loss mean overfitting?
+   * In other words, what does it means high validation loss?
+   * Ans:
+2. The second version of convnet has a layer called 'dropout'. I searched on the internet and found that it is a technique for fight for overfitting. What is the mechanism? It said that on the wiki: by drop out some of units to against overfitting.
+    * **my understanding** is that this layer randomly chooses 50%(0.5) units and drops the update.
+    * Ans:
+    * anther question about it. Does dropout occur at back propagation?
+
+* Other things need to discuss:
+  * CS232 has 2 options to take back points. But few students contact me to discuss about it.
+  * About grading, can I have an announcement for the request of regrading in slack for both courses?

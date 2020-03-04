@@ -60,3 +60,5 @@ because of the same reason, the activation function is 'sigmoid'
 '''
 
 model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=1e-4), metrics=['acc'])
+
+print('step 2 is complete')

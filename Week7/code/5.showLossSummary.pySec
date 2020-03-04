@@ -1,0 +1,23 @@
+import matplotlib.pyplot as plt
+
+acc = history.history['acc']
+validationAcc = history.history['val_acc']
+
+loss = history.history['loss']
+validationLoss = history.history['val_loss']
+
+epochs = range(1, len(acc)+1)
+
+plt.plot(epochs, acc, 'bo', label='training acc')
+plt.plot(epochs, validationAcc, 'b', label='validation acc')
+plt.title('training and validation accuracy')
+plt.legend()
+plt.show()
+
+plt.plot(epochs, loss, 'bo', label='training loss')
+plt.plot(epochs, validationLoss, 'b', label='validation loss')
+plt.title('training and validation loss')
+plt.legend()
+plt.show()
+
+print("step 5 is complete")

@@ -1,0 +1,10 @@
+history = model.fit_generator(trainGenerator, steps_per_epoch=100, epochs=30, validation_data=validationGenerator, validation_steps=50)
+'''
+Because we use generator, so we need to indicate the steps, or it will fit for infinite.
+steps_per_epoch = 2000(amont of dataset)/20(each generator content)
+The same reason to validation data.
+validation_steps = 1000/20
+'''
+model.save('catDogClassifySmallDataset.h5')
+
+print("step 4 is complete")
