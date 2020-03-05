@@ -4,8 +4,8 @@ from keras import models
 from keras import optimizers
 from keras.preprocessing.image import ImageDataGenerator
 
-DatasetDir = "/home/chen/LiChiChang/2020SpringThesis/dataset/original/train" #pls indicate your path
-SmallDataDir = "/home/chen/LiChiChang/2020SpringThesis/dataset/shrink" #pls indicate your path
+DatasetDir = "/home/chen/LiChiChang/2020SpringThesis/dataset/CatDog/original/train" #pls indicate your path
+SmallDataDir = "/home/chen/LiChiChang/2020SpringThesis/dataset/CatDog/shrink" #pls indicate your path
 
 trainDir = os.path.join(SmallDataDir, 'train')
 trainCatDir = os.path.join(trainDir, 'cat')
