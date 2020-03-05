@@ -9,3 +9,5 @@ validationGenerator = testDataGen.flow_from_directory(validationDir, target_size
 history = model.fit_generator(trainGenerator, steps_per_epoch=100, epochs = 100, validation_data=validationGenerator, validation_steps=50)
 
 model.save("catDogClassfiyDataset2.h5")
+
+print("step 8 is complete(make a dropout model)")

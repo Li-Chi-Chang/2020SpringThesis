@@ -402,15 +402,22 @@ Based on the original dataset, we create similar data and feed into this model. 
 trainDataGen = ImageDataGenerator(rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True,)
 ```
 
+* rescale: change every piexl value between +-1/255 times.
+* rotation_range: left or right rotation between +-20 degree.
+* width_shift_range / height_shift_range: shift the image horizontally or vertically the shift range is 20% of height or width
+* shear_range: X or Y aisx shift and other asix fix, and the range is 20%
+* zoom_range: zoom in or out with the scale 20%
+* horizontal_flip: flip the picture horizontally
+**Ref link<zhuanlan.zhihu.com/p/30197320>**
 
 ## Questions
 
 1. Does high validation loss mean overfitting?
    * In other words, what does it means high validation loss?
-   * Ans:
+   * Ans: **No, the loss function tells this model is good or bad.**
 2. The second version of convnet has a layer called 'dropout'. I searched on the internet and found that it is a technique for fight for overfitting. What is the mechanism? It said that on the wiki: by drop out some of units to against overfitting.
     * **my understanding** is that this layer randomly chooses 50%(0.5) units and drops the update.
-    * Ans:
+    * Ans: **No, while training, every epoch this layer dropout(set to 0) a half units' data.**
     * anther question about it. Does dropout occur at back propagation?
 
 * Other things need to discuss:
