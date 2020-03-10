@@ -1,3 +1,4 @@
 .vscode
 dataset
 *.h5
+pretrainModel
