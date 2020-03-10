@@ -423,3 +423,5 @@ trainDataGen = ImageDataGenerator(rescale=1./255, rotation_range=40, width_shift
 * Other things need to discuss:
   * CS232 has 2 options to take back points. But few students contact me to discuss about it.
   * About grading, can I have an announcement for the request of regrading in slack for both courses?
+
+test
