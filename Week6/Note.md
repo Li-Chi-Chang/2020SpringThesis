@@ -419,3 +419,5 @@ test_loss, test_acc = model.evaluate(test_images, test_labels)
 3. Do it several times, shrink the data set to 3X3 with depth 64.
 4. So the dimensions are 3X3X64. Flatten this dataset.
 5. Training model with this dataset.
+
+test
