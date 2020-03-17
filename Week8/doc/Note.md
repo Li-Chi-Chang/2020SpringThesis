@@ -16,3 +16,15 @@ There are two ways to use a pretrained network: feature extraction and fine-tuni
 How to defend it?
 
 * GAN
+
+## Ch6 Text model
+
+### What are the domin issues
+
+1. text is sequential. So the model needs to be designed with time.
+2. variably input. the input size is not fixed.
+
+Solution:
+
+* RNN -> Solve the time stemp issue
+* One hot encoding -> Solve the variably input
