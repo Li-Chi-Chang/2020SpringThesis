@@ -28,3 +28,17 @@ Solution:
 
 * RNN -> Solve the time stemp issue
 * One hot encoding -> Solve the variably input
+
+## Addversarial Essay reimplement
+
+I found the reimplement of this essay, and I try to directly use codes.
+And it is sucessful.
+
+### found in the codes
+
+1. bacially it is trying to use the parameters in a model
+2. use the loss of a specific picture
+3. find the loss value of each pixel and add them into the picture
+4. make the adversarial graph
+
+The concept is
