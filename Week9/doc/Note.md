@@ -29,8 +29,6 @@ I didn't dig into the detail of these demos, I will check them in days.
 
 ## RNN in text book
 
-
-
 ## CNN in MIT camp
 
 In the course3,4. They introduced the CNN and GAN and other generated model.
