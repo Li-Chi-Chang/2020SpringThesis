@@ -1,21 +1,46 @@
+#config>>>
+isDense = True
+epochs = 40
+#config<<<
+#fixed>>>
+isCNN = not isDense
+#fixed<<<
+
+#print the config
+if(isCNN):
+    print('This is CNN model training part.')
+elif(isDense):
+    print('This is Dense model training part.')
+print('The number of epochs are: '+str(epochs))
+
+
 from keras import models
 from keras import layers
 
 #making the neural network>>>
-# The convnet part
 model = models.Sequential()
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-#connect to the original part model
-model.add(layers.Flatten())
-#drop out
-model.add(layers.Dropout(0.5))
-# The original part
-model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(10, activation='softmax'))
+
+if(isCNN):
+    #covnet
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    #connect to the original part model
+    model.add(layers.Flatten())
+    #drop out
+    model.add(layers.Dropout(0.5))
+    # The original part
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(10, activation='softmax'))
+elif(isDense):
+    #dense net
+    model.add(layers.Dense(1, activation='relu', input_shape=(28,28,1)))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(512,activation='relu'))
+    model.add(layers.Dense(10, activation='softmax'))
+    model.layers[0].trainable = False
 
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['acc'])
 #making the neural network<<<
@@ -64,6 +89,9 @@ DataGen = ImageDataGenerator(rescale=1./255, rotation_range=40, width_shift_rang
 trainGenerator = DataGen.flow_from_directory(trainDir, batch_size=100,target_size=(28,28),color_mode='grayscale',class_mode='categorical')
 validationGenerator = DataGen.flow_from_directory(validationDir, batch_size=100,target_size=(28,28),color_mode='grayscale', class_mode='categorical')
 
-history = model.fit_generator(trainGenerator, steps_per_epoch=100, epochs=10, validation_data=validationGenerator, validation_steps=50)
+history = model.fit_generator(trainGenerator, steps_per_epoch=100, epochs=epochs, validation_data=validationGenerator, validation_steps=50)
 
-model.save('mnistEpochs'+str(10)+'CNN'+'.h5')
+if(isCNN):
+    model.save('mnistEpochs'+str(epochs)+'CNN'+'.h5')
+elif(isDense):
+    model.save('mnistEpochs'+str(epochs)+'DENSE'+'.h5')

@@ -24,14 +24,11 @@ For now the path is "/home/chen/.keras/datasets/mnist.npz"
 #making the neural network>>>
 network = models.Sequential()
 network.add(layers.Dense(512, activation='relu', input_shape=(28 * 28,)))
-network.add(layers.Dense(25, activation='relu'))
-network.add(layers.Dense(125, activation='relu'))
-network.add(layers.Dense(500, activation='relu'))
-network.add(layers.Dense(125, activation='relu'))
 network.add(layers.Dense(10, activation='softmax'))
 
 network.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 #making the neural network<<<
+network.summary()
 
 #resize the inputs>>>
 train_images = train_images.reshape((60000, 28 * 28))
